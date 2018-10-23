@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Amiri" rel="stylesheet">
+<link rel="stylesheet" href="scripts/semantic-ui-css/semantic.min.css">
+<style>
+* {
+  box-sizing: border-box;
+}
+#header {
+	background-image: url("/pic/banner.jpg");
+	background-size: cover;
+	text-align: center;
+	position: relative;
+	cursor: default;
+}
+	#header.alt h1 {
+	font-size: 4em;
+	color : Azure;
+	padding: 0 0.5em 0.25em 0.5em;
+	border-bottom: solid 2px #ffffff;
+	font-weight: 200;
+	font-family: 'Pacifico', cursive; 
+	}
+
+	#header.alt p {
+	text-transform: uppercase;
+	color : Azure;
+	letter-spacing: 0.325rem;
+	font-weight: 400;
+	font-size: 1em;
+	padding: 0 1.25em;
+	}
+#scene {
+	background-image: url("/pic/pic03.jpg");
+}
+#myInput {
+  background-position: 10px 10px;
+  background: rgba(255,255,255,0.5);
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  font-family: 'Pacifico', cursive; 
+}
+#myInput2 {
+  background-position: 10px 10px;
+  background: rgba(255,255,255,0.5);
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  font-family: 'Pacifico', cursive; 
+}
+#myTable {
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.5);
+  width: 100%;
+  border: 1px solid #ddd;
+  font-size: 18px;
+  font-family: 'Amiri', serif;
+}
+#myTable th, #myTable td {
+  text-align: left;
+  background: rgba(255,255,255,0.5);
+  padding: 12px;
+  width:40%;
+  font-family: 'Amiri', serif;
+}
+#myTable tr {
+  border-bottom: 1px solid #ddd;
+  background: rgba(255,255,255,0.5);
+}
+#myTable tr.header, #myTable tr:hover {
+  background-color: #f1f1f1;
+  background: rgba(255,255,255,0.5);
+}
+</style>
+</head>
+<body>
+<header id="header" class="alt">
+	<div class="inner">
+	<h1>Search room</h1>
+	<p>available rooms</p>
+</header>
+<div id = "scene">
+<button class="ui inverted blue button" onclick="roomlist()">show roomlist</button>
+
+<input type="text" id="myInput" onkeyup="myFunction3()" placeholder="Search for names.." title="Type in a name">
+
+<input type="text" id="myInput2" onkeyup="myFunction3()" placeholder="Search for theme.." title="Type in a theme">
+
+<table class="ui table" id="myTable">
+  <tr class="header">
+  <!--
+	<th style="width:40%;">RoomName</th>
+    <th style="width:30%;">theme</th>
+    <th style="width:30%">In room </th>
+	-->
+  </tr>
+</table>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var socket1 = io();
+var array2;
+var themelist2;
+var search1=0,search2=0;
+function roomlist() {
+	document.getElementById("myTable").innerHTML = "";
+	socket1.on('Roomlist3', function(roomidlist,themelist){
+		array2 = roomidlist;
+		themelist2 = themelist;
+	});
+	console.log(array2);
+	console.log(themelist2);
+	table = document.getElementById("myTable");
+    var header = table.createTHead();
+    var row = header.insertRow(0);
+    var celll = row.insertCell(0);
+	var celll2 = row.insertCell(1);
+	var celll3 = row.insertCell(2)
+    celll.innerHTML = "<b>RoomName</b>";
+	celll2.innerHTML = "<b>theme</b>";
+	celll3.innerHTML = "<b>In room party</b>"
+	for(var i = 0; i < array2.length; i++)
+	{
+		// create a new row
+		var newRow = table.insertRow(table.length);
+		for(var j = 0; j < 2; j++)
+		{
+		// create a new cell
+		var cell = newRow.insertCell(j);
+			// add value to the cell
+		if(j==0){
+			cell.innerHTML = array2[i];
+			}
+		else if(j==1){
+			cell.innerHTML = themelist2[i];
+			}		
+		}
+	}
+}
+function myFunction3() {
+  var input,input2, filter,filter2, table, tr, td,td2, i;
+  input = document.getElementById("myInput");
+  input2 = document.getElementById("myInput2");
+  filter = input.value.toUpperCase();
+  filter2 = input2.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+	td2 = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      if (td.innerHTML.toUpperCase().indexOf(filter) > -1 && td2.innerHTML.toUpperCase().indexOf(filter2) > -1 ) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+</script>
+
+</body>
+</html>

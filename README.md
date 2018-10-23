@@ -1,2 +1,2 @@
-# webcam_room_project
-socket.io
+# simp-webrtc
+A tutorial on building a WebRTC video chat app using SimpleWebRTC.
