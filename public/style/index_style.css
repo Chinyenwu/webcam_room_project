@@ -1,0 +1,18 @@
+* {
+  box-sizing: border-box;
+}
+
+#simp-web  {
+	font-size: 4em;
+	color : LightBlue;
+	padding: 0 0.5em 0.25em 0.5em;
+	border-bottom: solid 2px #ffffff;
+	font-weight: 200;
+	font-family: 'Satisfy', cursive;
+	text-align: center;
+	}
+body {
+	background-image: url("../pic/city.jpg");
+	background-size: cover;
+}
+#chat-content { height: 180px;  overflow-y: scroll; }

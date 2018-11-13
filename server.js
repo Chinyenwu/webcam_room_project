@@ -6,7 +6,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 //
 var port = process.env.PORT ||3232;
-
+var ip = '140.136.150.93';
 // Set public folder as root
 app.use(express.static('public'));
 
@@ -30,10 +30,10 @@ var i;
 io.on('connection', function (socket){
 	var curRoomName  = "大廳";
 	var room2;
-	
+
     socket.on('certain', function(roomName){
 		curRoomName = roomName;
-    });	
+    });
 	socket.join(curRoomName);
 	socket.on('roomlist', function(key){
 		io.emit('Roomlist', roomidlist);//收到訊息後把清除的資料廣播到client端
@@ -81,9 +81,10 @@ io.on('connection', function (socket){
 });
 
 
-http.listen(port, function ()  {
-  console.info('listen on %d', port);
+http.listen(port,ip,function ()  {
+  console.info('listen on %s:%d',ip,port);
 });
+
 function isRoomExist (roomName, roomList) {
   return roomList[roomName] >= 0;
 }
