@@ -1,13 +1,18 @@
 var express = require('express');
-
+var fs = require('fs');
 var app = express();
 // add socket
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var https = require('https');
+
+//var io = require('socket.io')(https);
 //
 var port = process.env.PORT ||3232;
-var ip = '140.136.150.93';
+var ip = '140.136.25.209';
 // Set public folder as root
+
+
+
+
 app.use(express.static('public'));
 
 // Provide access to node_modules folder from the client-side
@@ -26,6 +31,15 @@ var max=1;
 
 //var roomno = 1;
 var i;
+
+var server=https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app).listen(port,ip,function ()  {
+  console.info('listen on %s:%d',ip,port);
+});
+
+var io = require('socket.io').listen(server);
 
 io.on('connection', function (socket){
 	var curRoomName  = "大廳";
@@ -81,9 +95,6 @@ io.on('connection', function (socket){
 });
 
 
-http.listen(port,ip,function ()  {
-  console.info('listen on %s:%d',ip,port);
-});
 
 function isRoomExist (roomName, roomList) {
   return roomList[roomName] >= 0;
