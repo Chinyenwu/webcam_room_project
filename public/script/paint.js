@@ -1,7 +1,6 @@
 // add socket.io
-var socket = io();//'http://192.168.0.106');
-
-// upload image
+var socket = io.connect('https://140.136.25.209:3232', {secure: true});
+//參數
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 var current = {};
@@ -47,7 +46,7 @@ var ls = window.localStorage,
     var file = this.files[0];
     return file && fileReader.readAsDataURL(file);
   });
-// upload image
+
 const color = ["#ff4d4d","  #4169E1","  #FFA500","#333333"];
 var drawmode = false;
 for (let i=0 ; i<4 ; i++ )
@@ -66,14 +65,14 @@ for (let i=0 ; i<4 ; i++ )
  ctx.fillText("reload", 20 , 265);
 window.addEventListener('load',function(){
     var canvas=document.querySelector('#myCanvas');
-    canvas.addEventListener("click", getcolor, false);//選顏色
+    canvas.addEventListener("click", getcolor, false);
     canvas.addEventListener('mousedown',mouseDown);
 	//canvas.addEventListener('mousemove',mouseMove);
     canvas.addEventListener('mouseup',mouseUp);
     canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
 });
     socket.emit('pressed', 38);
-	socket.on('PlayersMoving', function(key){//所有畫面一起清除
+	socket.on('PlayersMoving', function(key){
 		ctx.clearRect(55, 0, 950 ,500 );
 	});
 	socket.on('back', function(state,roomName,username){
@@ -93,7 +92,7 @@ window.addEventListener('resize', onResize, false);
 onResize();
 
 function getcolor(e) {
-
+//選顏色
     var xPosition = event.pageX;
     var yPosition = event.pageY;
     var xCanvas = myCanvas.offsetLeft - myCanvas.scrollLeft + myCanvas.clientLeft;
@@ -110,7 +109,7 @@ function getcolor(e) {
     console.log('clear');
     ctx.clearRect(55, 0, 950 ,500 );
     socket.emit('pressed', 38);
-	socket.on('PlayersMoving', function(key){//所有畫面一起清除
+	socket.on('PlayersMoving', function(key){
 	ctx.clearRect(55, 0, 950 ,500 );
 	});
   }
@@ -133,14 +132,14 @@ function getcolor(e) {
       var y = (c.height - newh) / 2;
     drawImage(img, x, y, neww, newh);
   }
-    socket.on('Room2', function(state,roomName,username){//所有畫面一起清除
+    socket.on('Room2', function(state,roomName,username){
 		state2=state;
 		roomName2=roomName;
 		username2=username;
 		console.log(username2+" "+state2+" "+roomName2);
 	});
-    socket.on('Room3', function(Data){//所有畫面一起清除
-		//console.log(Data);
+    socket.on('Room3', function(Data){
+
 	});
 	socket.emit('certain', roomName2);
 	socket.emit('roomlist', 38);
@@ -156,29 +155,17 @@ function getcolor(e) {
   return colorT;
 
 }
-
+//畫畫
 function mouseDown(e){
   drawmode = true;
   clearRect = false;
   current.x =  event.pageX;
   current.y =  event.pageY;
-
-/*
-    var color1 = getcolor(e);
-    console.log(color1);
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.moveTo(event.pageX,event.pageY);
-    ctx.strokeStyle = color[color1];
-    ctx.lineWidth=2;
-    drawmode = true;
-*/
 }
 function mouseUp(e) {
 
   color1 = getcolor(e);
   console.log(color[color1]);
-  //console.log("current  " + current.x + "   " + current.y + " event " + event.pageX + "  " + event.pageY);
   drawLine(current.x-150, current.y-800, event.pageX-150, event.pageY-800, color1, size, true);
   ctx.closePath();
   drawmode = false ;
@@ -192,7 +179,6 @@ function onMouseMove(e){
     drawmode = false;
    if(event.pageX > 50+xCanvas && drawmode== true)
     {
-    //console.log("current  " + current.x + "   " + current.y + " event " + event.pageX + "  " + event.pageY);
     drawLine(current.x-150, current.y-800, event.pageX-150, event.pageY-800, color1, size, true);
     current.x = event.pageX;
     current.y = event.pageY;
@@ -201,7 +187,6 @@ function onMouseMove(e){
 
   }
  function senddata(data){
-  //console.log(data.color);
   drawLine(data.x0 , data.y0 , data.x1 , data.y1 , data.color ,data.size);
  }
 socket.on('drawing', senddata);
@@ -210,10 +195,8 @@ console.log(list2);
 function drawLine(x0, y0, x1, y1, colorP, size, emit){
 
     ctx.beginPath();
-    //console.log(x0 + "  " + y0 + "  " + x1 + "  " + y1 +"  "+color[colorP])
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);
-    //console.log(color[colorP]);
     ctx.strokeStyle = color[colorP];
     ctx.lineWidth = size;
     ctx.stroke();
@@ -231,18 +214,7 @@ function drawLine(x0, y0, x1, y1, colorP, size, emit){
 
 	console.log(roomName2);
   }
-/*
-function mouseMove(e) {
-  var xPosition = event.pageX;
-    var yPosition = event.pageY;
-  if(xPosition > 50 && drawmode== true)
-  {
-        ctx.lineTo(event.pageX, event.pageY);
-        ctx.stroke();
-  }
-}
-*/
-// image
+
 
 function drawImage(img, x, y, neww, newh) {//圖片顯示
    var dataUrl;

@@ -4,8 +4,6 @@ var app = express();
 // add socket
 var https = require('https');
 
-//var io = require('socket.io')(https);
-//
 var port = process.env.PORT ||3232;
 var ip = '140.136.25.209';
 // Set public folder as root
@@ -29,7 +27,6 @@ var statelist =[];
 var userlist =[];
 var max=1;
 
-//var roomno = 1;
 var i;
 
 var server=https.createServer({
@@ -50,11 +47,10 @@ io.on('connection', function (socket){
     });
 	socket.join(curRoomName);
 	socket.on('roomlist', function(key){
-		io.emit('Roomlist', roomidlist);//收到訊息後把清除的資料廣播到client端
+		io.emit('Roomlist', roomidlist);
 		io.emit('Roomlist3', roomidlist,themelist);
     });
 	socket.on('roomstate', function(state,roomName,username,theme){
-        //socket.emit('Room', state,roomName,username);//收到訊息後把清除的資料廣播到client端
 		statelist.push(state);
 		socket.leave("大廳");
 		for(i=0;i<=max;i++){
@@ -85,7 +81,7 @@ io.on('connection', function (socket){
 		io.emit('Roomlist3', roomidlist,themelist);
 	});
 	socket.on('pressed', function(key){
-		io.in(curRoomName).emit('PlayersMoving', key);//收到訊息後把清除的資料廣播到client端
+		io.in(curRoomName).emit('PlayersMoving', key);
 		io.emit('Roomlist3', roomidlist,themelist);
     });
 
