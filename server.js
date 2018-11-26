@@ -5,7 +5,7 @@ var app = express();
 var https = require('https');
 
 var port = process.env.PORT ||3232;
-var ip = '140.136.25.209';
+var ip = '140.136.40.66';
 // Set public folder as root
 
 
@@ -84,7 +84,10 @@ io.on('connection', function (socket){
 		io.in(curRoomName).emit('PlayersMoving', key);
 		io.emit('Roomlist3', roomidlist,themelist);
     });
-
+	socket.on('image',function(image2) {
+		//console.log(image2);
+		io.in(curRoomName).emit('image2', image2);
+	});
 	io.emit('Roomlist3', roomidlist,themelist);
 
 	console.log("curent is "+curRoomName);
