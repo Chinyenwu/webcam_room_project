@@ -1,5 +1,5 @@
 // add socket.io
-var socket = io.connect('https://140.136.25.209:3232', {secure: true});
+var socket = io.connect('https://140.136.40.66:3232', {secure: true});
 //參數
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
@@ -15,6 +15,7 @@ var roomName3;
 var username3;
 var list2=[] ;
 var i;
+var imagebig;
 //上傳圖片的程式
 var ls = window.localStorage,
   photo = document.getElementById('uploadImage'),
@@ -23,7 +24,32 @@ var ls = window.localStorage,
   fileReader.onload = function (e) {
   console.log(typeof e.target.result, e.target.result instanceof Blob);
   img.src = e.target.result;
+  console.log(e.target.result);
+  socket.emit('image',e.target.result);
+  imagebig = e.target.result;
   };
+  socket.on('image2',function(image2) { //接收圖片socket
+		var img = new Image;
+		img.onload = function() {
+			var rw = img.width / c.width; 
+			var rh = img.height / c.height;
+    
+			if (rw > rh)
+			{
+				newh = Math.round(img.height / rw);
+				neww = c.width;
+			}
+			else
+			{
+				neww = Math.round(img.width / rh);
+				newh = c.height;
+			}  
+			var x = (c.width - neww) / 2;
+			var y = (c.height - newh) / 2;  
+			ctx.drawImage(img, x, y, neww, newh);
+		};
+		img.src = image2;			
+	});
   img.onload = function() {
     var rw = img.width / c.width;
     var rh = img.height / c.height;
@@ -115,6 +141,29 @@ function getcolor(e) {
   }
   if(xPosition > xCanvas && xPosition < 60+xCanvas && yPosition > 250+yCanvas && yPosition < 300+yCanvas)
   {
+	socket.emit('image',imagebig);
+	socket.on('image2',function(image2) { //接收圖片socket
+		var img = new Image;
+		img.onload = function() {
+			var rw = img.width / c.width; 
+			var rh = img.height / c.height;
+    
+			if (rw > rh)
+			{
+				newh = Math.round(img.height / rw);
+				neww = c.width;
+			}
+			else
+			{
+				neww = Math.round(img.width / rh);
+				newh = c.height;
+			}  
+			var x = (c.width - neww) / 2;
+			var y = (c.height - newh) / 2;  
+			ctx.drawImage(img, x, y, neww, newh);
+		};
+		img.src = image2;			
+	})
     var rw = img.width / c.width;
     var rh = img.height / c.height;
 
